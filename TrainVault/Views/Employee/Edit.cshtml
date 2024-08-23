@@ -1,0 +1,71 @@
+﻿
+@model TrainVault.Models.EmployeeModel
+
+@{
+    ViewData["Title"] = "Edit Employee";
+}
+
+<h1 class="text-center mb-4">@ViewData["Title"]</h1>
+
+<div class="mx-auto my-2" style="max-width: 500px;">
+    <a asp-action="Index" class="btn btn-secondary"><i class="fa-solid fa-circle-left fa-lg"></i></a>
+</div>
+
+<div class="card shadow-sm mx-auto" style="max-width: 500px;">
+    <div class="card-body">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+            <input type="hidden" asp-for="EmployeeId" />
+
+            <div class="form-group mb-3">
+                <label asp-for="OrganizationId" class="form-label"></label>
+                <select asp-for="OrganizationId" class="form-select" asp-items="ViewBag.OrganizationId">
+                    <option value="">Select Organization</option>
+                </select>
+                <span asp-validation-for="OrganizationId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="FirstName" class="form-label"></label>
+                <input asp-for="FirstName" class="form-control" placeholder="Enter first name" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="LastName" class="form-label"></label>
+                <input asp-for="LastName" class="form-control" placeholder="Enter last name" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" placeholder="Enter email address" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Phone" class="form-label"></label>
+                <input asp-for="Phone" class="form-control" placeholder="Enter phone number" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="JobTitle" class="form-label"></label>
+                <input asp-for="JobTitle" class="form-control" placeholder="Enter job title" />
+                <span asp-validation-for="JobTitle" class="text-danger"></span>
+            </div>
+
+            <div class="d-grid gap-2">
+                <input type="submit" value="Save" class="btn btn-primary btn-lg" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

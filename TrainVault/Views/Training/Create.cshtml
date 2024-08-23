@@ -1,0 +1,119 @@
+﻿
+
+@model TrainVault.Models.TrainingModel
+
+<div class="container mt-5">
+    <h2 class="text-center">Create Training</h2>
+    <hr />
+    <div class="card shadow-sm p-4">
+        <form asp-action="Create" method="post">
+            @if (ViewData.ModelState.Values.SelectMany(v => v.Errors).Any())
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <ul class="list-unstyled text-danger m-0">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <li><i class="fa-solid fa-triangle-exclamation"></i> @error.ErrorMessage</li>
+                        }
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input asp-for="DateOfTraining" class="form-control" type="date" placeholder="Date of Training" />
+                        <label asp-for="DateOfTraining">Date of Training</label>
+                        <span asp-validation-for="DateOfTraining" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input asp-for="Purpose" class="form-control" placeholder="Purpose" />
+                        <label asp-for="Purpose">Purpose</label>
+                        <span asp-validation-for="Purpose" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select asp-for="Place" class="form-select" placeholder="Place" >
+                            <option value="Training Room 1">Training Room 1</option>
+                            <option value="Training Room 2">Training Room 2</option>
+                            <option value="Conference Room">Conference Room</option>
+                            <option value="2nd Floor">2nd Floor</option>
+                            <option value="Silver Hall">Silver Hall</option>
+                        </select>
+                        <label asp-for="Place">Place</label>
+                        <span asp-validation-for="Place" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select asp-for="OrganizationId" asp-items="Model.Organizations" class="form-select" id="OrganizationSelect">
+                            
+                        </select>
+                        <label asp-for="OrganizationId">Organization</label>
+                        <span asp-validation-for="OrganizationId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Select Employees</label>
+                    <div id="EmployeeSelect" class="form-control" style="height:auto;">
+                        @if(Model.Employees.Count() == 0)
+                        {
+                            <div class="text-info">No Employees found for this organization</div>
+                        }
+                        @foreach (var employee in Model.Employees)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="SelectedEmployeeIds" value="@employee.Value" id="employee_@employee.Value">
+                                <label class="form-check-label" for="employee_@employee.Value">
+                                    @employee.Text
+                                </label>
+                            </div>
+                        }
+                    </div>
+                    <span asp-validation-for="SelectedEmployeeIds" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary px-4 py-2">Save Training</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="my-3 text-center">
+        <a asp-action="Index" class="btn btn-secondary"><i class="fa-solid fa-circle-left fa-lg"></i> Back to List</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('#OrganizationSelect').change(function () {
+                var orgId = $(this).val();
+                $.get('/Training/GetEmployeesByOrganization', { organizationId: orgId }, function (data) {
+                    var $employeeSelect = $('#EmployeeSelect');
+                    $employeeSelect.empty();
+                    $.each(data, function (i, item) {
+                        $employeeSelect.append(
+                            $('<div class="form-check">').append(
+                                $('<input class="form-check-input" type="checkbox" name="SelectedEmployeeIds">').val(item.value).attr('id', 'employee_' + item.value),
+                                $('<label class="form-check-label">').attr('for', 'employee_' + item.value).text(item.text)
+                            )
+                        );
+                    });
+                });
+            });
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
